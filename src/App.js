@@ -8,6 +8,10 @@ function App() {
 	const [loading, setLoading] = useState(false);
 	const [tours, setTours] = useState([]);
 
+	const removeTour = (id) => {
+		const newTours = tours.filter((tour) => tour.id !== id);
+		setTours(newTours);
+	};
 	const getTours = async () => {
 		setLoading(true);
 		try {
@@ -16,14 +20,13 @@ function App() {
 			setTours(data);
 			setLoading(false);
 		} catch (error) {
-      console.error('Getting data failed');
-    }
+			console.error("Getting data failed");
+		}
 	};
-  console.log(tours);
+	console.log(tours);
 	useEffect(() => {
 		getTours();
 	}, []);
-
 
 	if (loading) {
 		return (
@@ -32,9 +35,19 @@ function App() {
 			</main>
 		);
 	}
+	if (tours.length === 0) {
+		return (
+			<main>
+				<div className="title">
+					<h2>No tours left</h2>
+					<button className="btn" onClick={getTours}>Refresh</button>
+				</div>
+			</main>
+		);
+	}
 	return (
 		<main>
-			<Tours data={tours} />
+			<Tours getTours={getTours} removeTour={removeTour} data={tours} />
 		</main>
 	);
 }
